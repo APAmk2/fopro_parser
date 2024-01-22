@@ -58,10 +58,13 @@ void GetProtoMap(string input, unordered_map<string, string>& output) {
 
     while (getline(ss, currStr, '\n')) {
         string key, val;
-        DelimateStr(currStr, key, val);
-        if (key != "") {
-            output[key] = val;
+        if (currStr.find("PID") != currStr.npos) {
+            output["define"] = currStr;
         }
+        DelimateStr(currStr, key, val);
+        if (key != "" && val != "") {
+            output[key] = val;
+        } 
     }
 }
 

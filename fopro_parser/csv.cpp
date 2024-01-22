@@ -46,17 +46,26 @@ void GenerateFopro(string input) {
     stringstream ss(input);
     string currLine;
     int counter = 0;
-
-    csvFileOutput += "[Proto]\n";
+    string localOutput;
+    
+    localOutput += "[Proto]\n";
 
     while (getline(ss, currLine)) {
+        if (csvLists[counter] == "define") {
+            if (currLine != "") {
+                localOutput = currLine + "\n" + localOutput;
+            }
+            counter++;
+            continue;
+        }
         string line2Append = csvLists[counter] + "=" + currLine + "\n";
         if (currLine != "") {
-            csvFileOutput += line2Append;
+            localOutput += line2Append;
         }
         counter++;
     }
-    csvFileOutput += "\n";
+    localOutput += "\n";
+    csvFileOutput += localOutput;
 }
 
 void WriteFopro(filesystem::path file) {
