@@ -83,9 +83,6 @@ void processCSV(filesystem::path file) {
     SetupLists();
     for (size_t i = 1; i < csvDataBlocks.size(); i++) {
         GenerateFopro(csvDataBlocks[i]);
-        if (csvDataBlocks.size() - 1 == i) {
-            cout << i << endl << csvDataBlocks[i];
-        }
     }
     WriteFopro(file);
 }
