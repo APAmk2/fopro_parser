@@ -1,6 +1,5 @@
-// csv.h - csv parser header.
+// csv.h - csv parser header file.
 // Copyright (C) 2024 APAMk2
-
 #pragma once
 
 #include <string>
@@ -10,5 +9,4 @@
 void LoadCsv(std::filesystem::path file);
 void SetupLists();
 void GenerateFopro(std::string input);
-void WriteFopro(std::filesystem::path file);
 void processCSV(std::filesystem::path file);

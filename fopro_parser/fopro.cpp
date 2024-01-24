@@ -1,7 +1,7 @@
 // fopro.cpp - fopro parser source file.
 // Copyright (C) 2024 APAMk2
-
 #include "fopro.h"
+#include "utils.h"
 
 #include <vector>
 #include <fstream>
@@ -12,26 +12,7 @@ using namespace std;
 
 vector<string> protoDataBlocks;
 string foproFileOutput;
-
 vector<string> foproLists;
-
-void DelimateStr(string input, string& key, string& val) {
-    bool isKeyParsed = false;
-    if (input.find("=") != input.npos) {
-        for (char c : input) {
-            if (c == '=') {
-                isKeyParsed = true;
-                continue;
-            }
-            if (!isKeyParsed) {
-                key += c;
-            }
-            else {
-                val += c;
-            }
-        }
-    }
-}
 
 void LoadFopro(filesystem::path file) {
     string currString;
@@ -85,34 +66,25 @@ void GenerateCSV(unordered_map<string, string> input) {
     foproFileOutput += "\n";
 }
 
-void WriteCSV(filesystem::path file) {
-    ofstream out;
-    out.open(file.filename() += ".csv");
-    if (out.is_open())
-    {
-        out << foproFileOutput << endl;
-    }
-    out.close();
-}
-
 void GenerateLists() {
     for (size_t i = 0; i < protoDataBlocks.size(); i++) {
         unordered_map<string, string> data;
         GetProtoMap(protoDataBlocks[i], data);
-        ofstream goy("goy.txt");
-        for (const auto& [key, value] : data) {
-           
-            goy << key << " " << value << endl;
-        }
-        goy.close();
         for (const auto& [key, value] : data) {
             if (find(foproLists.begin(), foproLists.end(), key) == foproLists.end()) {
                 foproLists.push_back(key);
             }
         }
     }
+    unordered_map<string, string> replaces;
+    LoadListsConfig(replaces, false);
     for (size_t i = 0; i < foproLists.size(); i++) {
-        foproFileOutput += pushBack(foproLists[i]);
+        if (auto search = replaces.find(foproLists[i]); search != replaces.end()) {
+            foproFileOutput += pushBack(search->second);
+        }
+        else {
+            foproFileOutput += pushBack(foproLists[i]);
+        }
     }
     foproFileOutput += "\n";
 }
@@ -126,5 +98,5 @@ void processFOPRO(filesystem::path file) {
         GetProtoMap(protoDataBlocks[i], data);
         GenerateCSV(data);
     }
-    WriteCSV(file);
+    WriteFile(file, foproFileOutput, ".csv");
 }

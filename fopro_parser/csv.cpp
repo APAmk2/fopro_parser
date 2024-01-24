@@ -1,7 +1,7 @@
 // csv.cpp - csv parser source file.
 // Copyright (C) 2024 APAMk2
-
 #include "csv.h"
+#include "utils.h"
 
 #include <vector>
 #include <fstream>
@@ -37,8 +37,15 @@ void LoadCsv(filesystem::path file) {
 void SetupLists() {
     stringstream ss(csvDataBlocks[0]);
     string currLine;
+    unordered_map<string, string> config;
+    LoadListsConfig(config, true);
     while (getline(ss, currLine)) {
-        csvLists.push_back(currLine);
+        if (auto search = config.find(currLine); search != config.end()) {
+            csvLists.push_back(search->second);
+        }
+        else {
+            csvLists.push_back(currLine);
+        }
     }
 }
 
@@ -68,21 +75,11 @@ void GenerateFopro(string input) {
     csvFileOutput += localOutput;
 }
 
-void WriteFopro(filesystem::path file) {
-    ofstream out;
-    out.open(file.filename() += ".fopro");
-    if (out.is_open())
-    {
-        out << csvFileOutput << endl;
-    }
-    out.close();
-}
-
 void processCSV(filesystem::path file) {
     LoadCsv(file);
     SetupLists();
     for (size_t i = 1; i < csvDataBlocks.size(); i++) {
         GenerateFopro(csvDataBlocks[i]);
     }
-    WriteFopro(file);
+    WriteFile(file, csvFileOutput, ".fopro");
 }

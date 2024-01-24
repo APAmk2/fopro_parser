@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (fopro_parser "fopro_parser.cpp" "fopro_parser.h" "fopro.cpp" "fopro.h" "csv.cpp" "csv.h")
+add_executable (fopro_parser "main.cpp"  "fopro.cpp" "fopro.h" "csv.cpp" "csv.h"  "utils.h" "utils.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET fopro_parser PROPERTY CXX_STANDARD 20)
